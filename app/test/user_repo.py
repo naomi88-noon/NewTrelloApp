@@ -21,15 +21,13 @@ def mock_user():
     user.email = "test@example.com"
     user.name = "testuser"
     user.password = "qwerty"
-    user.complete = False
     return user
 
 
 class TestUserRepo:
     
     def test_create_user_success(self, user_repo, mock_db, mock_user):
-        user_create = UserCreate(email="test@example.com", name="testuser", password="qwerty", complete=False)
-        mock_db.add = Mock()
+        user_create = UserCreate(email="test@example.com", name="testuser", password="qwerty")
         mock_db.commit = Mock()
         mock_db.refresh = Mock()
         
