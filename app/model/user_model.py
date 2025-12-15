@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from app.db.database import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -15,8 +15,8 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships (lazy loading)
-    tasks = relationship("Task", back_populates="owner", lazy="select")
-    boards = relationship("Board", back_populates="owner", lazy="select")
+    tasks = relationship("Task", back_populates="owner", cascade="all, delete-orphan")
+    boards = relationship("Board", back_populates="owner", cascade="all, delete-orphan")
     
     def __repr__(self):
         return f"<User(id={self.id}, name='{self.name}', email='{self.email}')>"

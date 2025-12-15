@@ -10,5 +10,8 @@ class Board(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
 
 
-    task = relationship("Task", back_populates= "boards")
     owner = relationship("User", back_populates="boards")
+    tasks = relationship("Task", back_populates="board", cascade="all, delete-orphan")
+    
+    def __repr__(self):
+        return f"<Board(id={self.id}, name='{self.name}', owner_id={self.owner_id})>"
