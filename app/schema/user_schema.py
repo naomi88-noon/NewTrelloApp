@@ -1,22 +1,28 @@
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
-from pydantic import BaseModel
 
 
 class UserCreate(BaseModel):
-    name: str
-    email: str
-    password: str
+    name: str = Field(..., min_length=1)
+    email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
+    password: str = Field(..., min_length=6)
     
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1)
+    email: Optional[str] = Field(None, pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
+    password: Optional[str] = Field(None, min_length=6)
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
 class UserRead(BaseModel):
     id: int
     name: str
     email: str
-
-    class Config:
-        orm_mode = True
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
     
-class UserUpdate(BaseModel):
-    email: Optional[str] = None
-    name: Optional[str] = None
-    password: Optional[str] = None
-    
+    model_config = ConfigDict(from_attributes=True)
