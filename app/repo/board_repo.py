@@ -17,8 +17,8 @@ class BoardRepo:
         return new_Board
     
     
-    def get_all_board(self, db:Session):
-        return db.query(self.model).all()
+    def get_all_board(self, db:Session, user_id: int):
+        return db.query(self.model).filter(Board.owner_id ,user_id).all()
     
     def get_board_by_id(self, db:Session, board_id: int):
         return db.query(self.model).filter(self.model.id == board_id).first()

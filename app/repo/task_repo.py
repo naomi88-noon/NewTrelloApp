@@ -22,8 +22,11 @@ class TaskRepo:
         db.refresh(new_task)
         return new_task
     
-    def get_all_task(self, db:Session):
-        return db.query(self.model).all()
+    def get_all_task(self, db:Session, user_id: int, Board_id: int):
+        if Board_id:
+            return db.query(self.model).filter(Task.owner_id == user_id, Task.board_id == Board_id).all()
+        else:
+            return db.query(self.model).filter(Task.owner_id == user_id).all()
     
     
     def get_task_by_id(self, db:Session, Task_id: int):
