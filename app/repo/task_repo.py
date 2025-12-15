@@ -46,8 +46,8 @@ class TaskRepo:
         return task
      
      
-    def delete_task(self, db: Session, Task_id: int):
+    def delete_task(self, db: Session, task: Task):
 
-        db.delete(Task)
+        db.delete(task)
         db.commit()
         return True

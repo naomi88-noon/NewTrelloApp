@@ -36,10 +36,7 @@ class BoardRepo:
         return board
     
     
-    def delete_board(self, db: Session, board_id: int):
-        board = self.get_board_by_id(db, board_id)
-        if not board:
-            return None
+    def delete_board(self, db: Session, board: Board):
 
         db.delete(board)
         db.commit()
