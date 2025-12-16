@@ -15,8 +15,8 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships (lazy loading)
-    tasks = relationship("Task", back_populates="owner", cascade="all, delete-orphan")
-    boards = relationship("Board", back_populates="owner", cascade="all, delete-orphan")
+    tasks = relationship("Task", back_populates="owner")
+    boards = relationship("Board", back_populates="owner")
     
     def __repr__(self):
         return f"<User(id={self.id}, name='{self.name}', email='{self.email}')>"
