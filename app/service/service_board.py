@@ -30,7 +30,7 @@ class BoardService:
         """Update board"""
         board = self.get_board_by_id(db, board_id)
         
-        return self.repo.update_board(db, board=Board, updated_data=updated_data)
+        return self.repo.update_board(db, board=board, updated_data=updated_data)
     
     def delete_board(self, db: Session, board_id: int):
         """Delete board"""

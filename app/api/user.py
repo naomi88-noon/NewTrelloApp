@@ -35,10 +35,10 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=list[UserRead])
-def get_all_users(db: Session = Depends(get_db)):
+def get_all_users(owner_id: int, db: Session = Depends(get_db)):
     """Get all users"""
     try:
-        users = user_service.get_all_users(db)
+        users = user_service.get_all_users(db, owner_id)
         return users
     except Exception as e:
         raise HTTPException(

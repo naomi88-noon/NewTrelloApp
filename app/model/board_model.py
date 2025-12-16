@@ -7,6 +7,7 @@ class Board(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255))
+    description = Column(String(1024), nullable=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
 
