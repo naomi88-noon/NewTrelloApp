@@ -9,8 +9,6 @@ class Task(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255))
     complete = Column(Boolean, default=False)
-
-
     owner_id = Column(Integer, ForeignKey("users.id"))  
     board_id = Column(Integer, ForeignKey("boards.id"))  
      

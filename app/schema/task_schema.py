@@ -2,25 +2,27 @@ from typing import Optional
 from pydantic import BaseModel
 
 class CreateTask(BaseModel):
-    title: str
+    name: str
     complete: bool
-    description: str
     owner_id: int
-    board: int
+    board_id: int
 
     
     
 class ReadTask(BaseModel):
     id : int
-    title : str
+    name : str
+    owner_id: int
+    board_id: int
+    complete: bool
+
 
     class Config:
         orm_mode = True 
         
         
 class UpdateTask(BaseModel):
-    id : Optional[int] = None
-    title: Optional[str] = None
-    description: Optional[str] = None
-    board:Optional[int] = None
+    name: Optional[str] = None
+    board_id:Optional[int] = None
     complete:Optional[bool] = None
+    

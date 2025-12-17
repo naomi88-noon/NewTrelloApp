@@ -9,9 +9,9 @@ class TaskRepo:
         
     def create_task(self, db: Session, task: CreateTask):
         new_task = Task(
-            title=task.title,
-            description=task.description,   
-            board=task.board,
+            name=task.name,
+            complete=task.complete,
+            board_id=task.board_id,
             owner_id=task.owner_id,
             
 )

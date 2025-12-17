@@ -8,6 +8,7 @@ from app.model.board_model import Board
 
 from app.api.user import router as user_router
 from app.api.board import router as board_router
+from app.api.task import router as task_router
 
 # Create all database tables
 Base.metadata.create_all(bind=engine)
@@ -27,3 +28,4 @@ def root():
 # INCLUDE ROUTERS
 app.include_router(user_router, prefix="/api/user", tags=["User"])
 app.include_router(board_router, prefix="/api/board", tags=["Board"])
+app.include_router(task_router, prefix="/api/task", tags=["Task"])
