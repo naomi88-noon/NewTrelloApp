@@ -3,8 +3,13 @@ from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 
 
+
+class Login(BaseModel):
+    name: str
+    password: str
+
 class UserCreate(BaseModel):
-    name: str = Field(..., min_length=1)
+    username: str = Field(..., min_length=1)
     email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
     password: str = Field(..., min_length=6)
     

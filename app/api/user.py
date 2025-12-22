@@ -3,13 +3,26 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.schema.user_schema import UserCreate, UserRead, UserUpdate
 from app.service.service_user import UserService
+from app.auth import get_current_user
+from app.model.user_model import User
+from app.auth import verify_password, create_access_token
 
 router = APIRouter()
 user_service = UserService()
 
 
+@router.post("/login")
+def login(username: str, password: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.name == username).first()
+    if not user or not verify_password(password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    token = create_access_token(user.id)
+    return {"access_token": token, "token_type": "bearer"}
+
+
+
 @router.post("", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
+def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
     """Create a new user"""
     try:
         user = user_service.create_user(db, user_data)
