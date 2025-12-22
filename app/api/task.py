@@ -36,7 +36,7 @@ def get_task(task_id: int, db: Session = Depends(get_db)):
         )
         
 @router.get("", response_model=list[ReadTask])
-def get_all_tasks(board_id: int, user_id, db: Session = Depends(get_db)):
+def get_all_tasks(board_id: int, user_id: int, db: Session = Depends(get_db)):
     """Get all tasks"""
     try:
         tasks = task_service.get_all_task(db, user_id, board_id)
@@ -59,12 +59,11 @@ def update_task(task_id: int, task_data: UpdateTask, db: Session = Depends(get_d
             detail=str(e)
         )
         
-@router.delete("/{task_id}", response_model=ReadTask)
+@router.delete("/{task_id}", response_model=dict)
 def delete_task(task_id: int, db: Session = Depends(get_db)):
     """Delete task"""
     try:
-        task = task_service.delete_task(db, task_id)
-        return task
+       return task_service.delete_task(db, task_id)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

@@ -1,4 +1,7 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+import traceback
+from fastapi import HTTPException
 from app.model.user_model import User
 from app.schema.user_schema import UserCreate, UserUpdate
 
@@ -6,16 +9,21 @@ from app.schema.user_schema import UserCreate, UserUpdate
 class UserRepo:
     
     def create_user(self, db: Session, user: UserCreate):
-        new_user = User(
-            name=user.name,
-            email=user.email,
-            password=user.password
+        try:
+            new_user = User(
+              name=user.name,
+              email=user.email,
+              password=user.password
         )
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        return new_user
-    
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            return new_user
+        except SQLAlchemyError:
+          db.rollback()
+          traceback.print_exc()
+          raise HTTPException(status_code=500, detail= "fail to create user")
+     
     def get_all_users(self, db: Session):
         """Get all users"""
         return db.query(User).all()
@@ -30,13 +38,19 @@ class UserRepo:
     
     def update_user(self, db: Session, user: User, updated_data: UserUpdate):
         """Update user"""
-        update_dict = updated_data.model_dump(exclude_unset=True)
-        for key, value in update_dict.items():
+        try:
+           update_dict = updated_data.model_dump(exclude_unset=True)
+           for key, value in update_dict.items():
             setattr(user, key, value)
         
-        db.commit()
-        db.refresh(user)
-        return user
+           db.commit()
+           db.refresh(user)
+           return user
+    
+        except SQLAlchemyError:
+          db.rollback()
+          traceback.print_exc()
+          raise HTTPException(status_code=500, detail="fail to update user")
     
     def delete_user(self, db: Session, user: User):
         """Delete user"""
@@ -44,4 +58,4 @@ class UserRepo:
         db.delete(user)
         db.commit()
         
-        return True
+        return {"detail": "Task deleted"}

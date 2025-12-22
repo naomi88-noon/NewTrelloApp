@@ -59,11 +59,12 @@ def update_board(board_id: int, board_data: UpdateBoard, db: Session = Depends(g
         )
         
         
-@router.delete("/{board_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{board_id}", status_code=status.HTTP_200_OK)
 def delete_board(board_id: int, db: Session = Depends(get_db)):
     """Delete board"""
     try:
         board_service.delete_board(db, board_id)
+        return {"detail": "Board deleted successfully"}
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class CreateTask(BaseModel):
     name: str
-    complete: bool
+    complete: bool 
     owner_id: int
     board_id: int
 

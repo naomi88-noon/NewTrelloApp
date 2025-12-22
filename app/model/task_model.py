@@ -16,4 +16,4 @@ class Task(Base):
     board = relationship("Board", back_populates="tasks", foreign_keys=[board_id]) 
     
     def __repr__(self):
-        return f"<Task(id={self.id}, title='{self.title}', owner_id={self.owner_id})>"
+      return f"<Task(id={self.id}, title='{self.title}', owner_id={self.owner_id})>"

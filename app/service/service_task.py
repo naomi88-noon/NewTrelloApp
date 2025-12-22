@@ -1,3 +1,4 @@
+from asyncio.log import logger
 from sqlalchemy.orm import Session
 from app.schema.task_schema import CreateTask, UpdateTask
 from app.model.task_model import Task
@@ -27,13 +28,16 @@ class TaskService:
     
     def update_task(self, db: Session, task_id: int, updated_data: UpdateTask):
         """Update task"""
-        task = self.repo.get_task_by_id(db, task_id)
+        task = self.get_task_by_id(db, task_id)
         return self.repo.task_update(db, task=task, updated_data=updated_data)
 
         
     def delete_task(self, db: Session, task_id: int):
         """Delete task"""
-        task = self.repo.get_task_by_id(db, task_id)
+        task = self.get_task_by_id(db, task_id)
+        # logger.log("Task",task)
+        if not task:
+            raise Exception("Task not found.")
         return self.repo.delete_task(db, task=task)
         
        

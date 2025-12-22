@@ -1,4 +1,7 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+import traceback
+from fastapi import HTTPException
 from app.schema.board_schema import CreateBoard , UpdateBoard
 from app.model import Board
 
@@ -6,16 +9,22 @@ class BoardRepo:
     def __init__(self):
         self.model = Board
     def create_board(self, db: Session, board: CreateBoard):
-        new_Board = Board(
-            name=board.name,
-            description=board.description,
-        )
-            
-        db.add(new_Board)
-        db.commit()
-        db.refresh(new_Board)
-        return new_Board
-    
+        try:
+            new_Board = Board(
+                name=board.name,
+                description=board.description,
+            )
+                
+            db.add(new_Board)
+            db.commit()
+            db.refresh(new_Board)
+            return new_Board
+        except SQLAlchemyError:
+            db.rollback()
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail= "fail to create board")
+
+
     
     def get_all_board(self, db:Session, user_id: int):
      return db.query(self.model).filter(self.model.owner_id == user_id).all()
@@ -30,12 +39,17 @@ class BoardRepo:
             setattr(board, key, value)
 
         
+        try:
+            db.commit()
+            db.refresh(board)
+            return board
+
+        except SQLAlchemyError:
+            db.rollback()
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail="fail to update board") 
         
-        db.commit()
-        db.refresh(board)
-        return board
-    
-    
+        
     def delete_board(self, db: Session, board: Board):
 
         db.delete(board)

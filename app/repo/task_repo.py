@@ -1,4 +1,7 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+import traceback
+from fastapi import HTTPException
 from app.schema.task_schema import CreateTask , UpdateTask
 from app.model import Task
 
@@ -8,19 +11,25 @@ class TaskRepo:
         self.model = Task
         
     def create_task(self, db: Session, task: CreateTask):
-        new_task = Task(
-            name=task.name,
-            complete=task.complete,
-            board_id=task.board_id,
-            owner_id=task.owner_id,
+        try:
+            new_task = Task(
+              name=task.name,
+              complete=task.complete,
+              board_id=task.board_id,
+              owner_id=task.owner_id,
             
-)
+            )
         
         
-        db.add(new_task)
-        db.commit()
-        db.refresh(new_task)
-        return new_task
+            db.add(new_task)
+            db.commit()
+            db.refresh(new_task)
+            return new_task
+        except SQLAlchemyError:
+            db.rollback()
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail= "fail to create task"
+            ) 
     
     def get_all_task(self, db:Session, user_id: int, Board_id: int):
         if Board_id:
@@ -34,20 +43,25 @@ class TaskRepo:
     
 
     def task_update(self, db:Session, task: Task, updated_data: UpdateTask):
-       
-        update_dict = updated_data.model_dump(exclude_unset=True)
-        for key, value in update_dict.items():
+        try:
+            
+           update_dict = updated_data.model_dump(exclude_unset=True)
+           for key, value in update_dict.items():
             setattr(task, key, value)
         
         
-        db.commit()
-        db.refresh(task)
+           db.commit()
+           db.refresh(task)
          
-        return task
+           return task
+        except SQLAlchemyError:
+            db.rollback()
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail="fail to update task")
      
      
     def delete_task(self, db: Session, task: Task):
 
         db.delete(task)
         db.commit()
-        return True
+        return {"detail": "Task Deleted"}

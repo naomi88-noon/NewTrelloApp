@@ -35,10 +35,10 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=list[UserRead])
-def get_all_users(owner_id: int, db: Session = Depends(get_db)):
+def get_all_users(db: Session = Depends(get_db)):
     """Get all users"""
     try:
-        users = user_service.get_all_users(db, owner_id)
+        users = user_service.get_all_users(db)
         return users
     except Exception as e:
         raise HTTPException(
@@ -51,7 +51,7 @@ def get_all_users(owner_id: int, db: Session = Depends(get_db)):
 def update_user(user_id: int, user_data: UserUpdate, db: Session = Depends(get_db)):
     """Update user"""
     try:
-        user = user_service.update_user(db, user_id, user_data)
+        user = user_service.update_user(db, user_id=user_id, updated_data=user_data)
         return user
     except Exception as e:
         raise HTTPException(
@@ -60,12 +60,12 @@ def update_user(user_id: int, user_data: UserUpdate, db: Session = Depends(get_d
         )
 
 
-@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{user_id}", status_code=status.HTTP_200_OK)
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     """Delete user"""
     try:
         user_service.delete_user(db, user_id)
-        return None
+        return {"detail": "User deleted successfully"}
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
