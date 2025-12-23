@@ -1,4 +1,6 @@
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
+from app.auth import create_access_token
 from app.model.user_model import User
 from app.schema.user_schema import UserCreate, UserUpdate
 from app.repo.user_repo import UserRepo
@@ -8,7 +10,24 @@ class UserService:
     
     def __init__(self):
         self.repo = UserRepo()
-    
+          
+        
+    def login(self,  db: Session ,data ):
+            
+        existing_user = self.repo.login( db, data)
+            
+        if not existing_user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+      
+        if data.password != existing_user.password:
+         raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        token = create_access_token(existing_user.id)
+        return {
+        "access_token": token,
+        "token_type": "bearer"
+    }
+ 
     def create_user(self, db: Session, data: UserCreate):
         """Create a new user with validation"""
         # Check if user already exists

@@ -2,11 +2,19 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 import traceback
 from fastapi import HTTPException
+from app.api import user
+from app.auth import create_access_token
 from app.model.user_model import User
-from app.schema.user_schema import UserCreate, UserUpdate
+from app.schema.user_schema import UserCreate, UserUpdate, Login
+from app.db.database import get_db
+from fastapi import Depends
 
 
 class UserRepo:
+    
+    
+    def login(self, db: Session, name: Login):
+     return db.query(User).filter(User.name == name.name).first()
     
     def create_user(self, db: Session, user: UserCreate):
         try:

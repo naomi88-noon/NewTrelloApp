@@ -7,9 +7,11 @@ from typing import Optional
 class Login(BaseModel):
     name: str
     password: str
+    
+    model_config = ConfigDict(from_attributes=True)
 
 class UserCreate(BaseModel):
-    username: str = Field(..., min_length=1)
+    name: str = Field(..., min_length=1)
     email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
     password: str = Field(..., min_length=6)
     
