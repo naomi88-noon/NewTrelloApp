@@ -4,11 +4,7 @@ from typing import Optional
 
 
 
-class Login(BaseModel):
-    name: str
-    password: str
-    
-    model_config = ConfigDict(from_attributes=True)
+
 
 class UserCreate(BaseModel):
     name: str = Field(..., min_length=1)

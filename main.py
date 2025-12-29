@@ -29,4 +29,4 @@ def root():
 app.include_router(user_router, prefix="/api/user", tags=["User"])
 app.include_router(board_router, prefix="/api/board", tags=["Board"])
 app.include_router(task_router, prefix="/api/task", tags=["Task"])
-app.include_router(auth_router, prefix="/api/auth", tags=["Authentication"]) 
+app.include_router(auth_router,  tags=["Authentication"]) 
